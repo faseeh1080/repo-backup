@@ -47,7 +47,7 @@ def clone_repos():
 
     for repo in repos:
         os.system(
-            f"git clone https://github.com/{config["username"]}/{repo["name"]}.git {backup_dir}/{repo["name"]}"
+            f"git clone --no-checkout https://github.com/{config["username"]}/{repo["name"]}.git {backup_dir}/{repo["name"]}"
         )
 
 
