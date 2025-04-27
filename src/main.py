@@ -34,16 +34,31 @@ def clone_repos(repos):
             os.system(f"git clone --no-checkout {repo} {BACKUP_DIR}/{name}")
 
 
-def update_repos():
-    for repo in os.listdir(BACKUP_DIR):
-        os.system(f"cd {os.path.join(BACKUP_DIR, repo)} && git fetch origin")
-        print(f"Updated {repo}")
+def update_repos(repo_paths):
+    for path in repo_paths:
+        os.system(f"cd {path} && git fetch --verbose origin")
+
+
+def update_lfs_files(repo_paths):
+    if os.system("git lfs --version") != 0:
+        print(
+            "Oops! Looks like Git LFS is not installed. Please rerun the program after fixing the issue."
+        )
+        sys.exit()
+
+    for path in repo_paths:
+        os.system(f"cd {path} && git lfs fetch --all")
 
 
 if __name__ == "__main__":
     configuration = get_configuration()
     os.makedirs(BACKUP_DIR, exist_ok=True)
     clone_repos(configuration["repos"])
-    update_repos()
+
+    repo_paths = [os.path.join(BACKUP_DIR, repo) for repo in os.listdir(BACKUP_DIR)]
+    update_repos(repo_paths)
+
+    if configuration["lfs"]:
+        update_lfs_files(repo_paths)
 
     print("Your backup has been successfully completed.")
