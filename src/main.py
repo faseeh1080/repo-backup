@@ -20,32 +20,51 @@ def get_configuration():
 
 def clone_repos(repos):
     """Clones repos which are not cloned yet."""
-    result = os.system("git --version")
-    if result != 0:
+    if os.system("git --version") != 0:
         print(
             "Oops! Looks like Git is not installed or added to your PATH. Please rerun the program after fixing the issue."
         )
-        sys.exit()
+        sys.exit(1)
 
     cloned_repos = os.listdir(BACKUP_DIR)
 
     for repo in repos:
         name = repo[19:-4].replace("/", "-")
         if name not in cloned_repos:
+            print(f"\033[Kgit clone: {repo}", end="\r", flush=True)
             subprocess.run(
                 ["git", "clone", "--no-checkout", repo, os.path.join(BACKUP_DIR, name)],
                 check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.PIPE,
             )
+    print("\033[Kgit clone complete.")
 
 
 def update_repos(repo_paths):
     for path in repo_paths:
-        subprocess.run(["git", "fetch", "--verbose", "origin"], cwd=path, check=True)
+        print(f"\033[Kgit fetch: {path}", end="\r", flush=True)
+        subprocess.run(
+            ["git", "fetch", "--verbose", "origin"],
+            cwd=path,
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+        )
+    print("\033[Kgit fetch complete.")
 
 
 def update_lfs_files(repo_paths):
     for path in repo_paths:
-        subprocess.run(["git", "lfs", "fetch", "--all"], cwd=path, check=True)
+        print(f"\033[Kgit lfs fetch: {path}", end="\r", flush=True)
+        subprocess.run(
+            ["git", "lfs", "fetch", "--all"],
+            cwd=path,
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+        )
+    print("\033[Kgit lfs fetch complete.")
 
 
 if __name__ == "__main__":
