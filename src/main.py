@@ -1,5 +1,6 @@
 import json
 import os
+import subprocess
 import sys
 
 from config import configure
@@ -31,31 +32,30 @@ def clone_repos(repos):
     for repo in repos:
         name = repo[19:-4].replace("/", "-")
         if name not in cloned_repos:
-            os.system(f"git clone --no-checkout {repo} {BACKUP_DIR}/{name}")
+            subprocess.run(
+                ["git", "clone", "--no-checkout", repo, os.path.join(BACKUP_DIR, name)],
+                check=True,
+            )
 
 
 def update_repos(repo_paths):
     for path in repo_paths:
-        os.system(f"cd {path} && git fetch --verbose origin")
+        subprocess.run(["git", "fetch", "--verbose", "origin"], cwd=path, check=True)
 
 
 def update_lfs_files(repo_paths):
-    if os.system("git lfs --version") != 0:
-        print(
-            "Oops! Looks like Git LFS is not installed. Please rerun the program after fixing the issue."
-        )
-        sys.exit()
-
     for path in repo_paths:
-        os.system(f"cd {path} && git lfs fetch --all")
+        subprocess.run(["git", "lfs", "fetch", "--all"], cwd=path, check=True)
 
 
 if __name__ == "__main__":
     configuration = get_configuration()
+
     os.makedirs(BACKUP_DIR, exist_ok=True)
     clone_repos(configuration["repos"])
 
     repo_paths = [os.path.join(BACKUP_DIR, repo) for repo in os.listdir(BACKUP_DIR)]
+
     update_repos(repo_paths)
 
     if configuration["lfs"]:
