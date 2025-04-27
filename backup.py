@@ -3,6 +3,8 @@ import os
 import sys
 import requests
 
+BACKUP_DIR = "backup"
+
 
 def get_public_repos(username):
     response = requests.get(f"https://api.github.com/users/{username}/repos")
@@ -16,17 +18,11 @@ def get_public_repos(username):
     return repos
 
 
-def get_config():
-    if os.path.exists("config.json"):
-        with open("config.json", "r") as config_file:
-            config = json.load(config_file)
-            return config
-
+def configure():
     print("Welcome! Lets configure your backup program. You only need to do it once.")
 
     config = {"username": "none", "repos": []}
 
-    # Add username
     config["username"] = input("Enter your GitHub username: ")
 
     # Add all public repos
@@ -54,7 +50,17 @@ def get_config():
     with open("config.json", "w") as config_file:
         json.dump(config, config_file, indent=4)
 
-    print("Configuration complete!\nYour repos will soon be cloned.")
+    print("Configuration complete!")
+    return config
+
+
+def get_config():
+    if not os.path.exists("config.json"):
+        config = configure()
+    else:
+        with open("config.json", "r") as config_file:
+            config = json.load(config_file)
+
     return config
 
 
@@ -67,18 +73,24 @@ def clone_repos(repos):
         )
         sys.exit()
 
-    backup_dir = "backup"
-
-    cloned_repos = os.listdir(backup_dir)
+    cloned_repos = os.listdir(BACKUP_DIR)
 
     for repo in repos:
         name = repo[19:-4].replace("/", "-")
         if name not in cloned_repos:
-            os.system(f"git clone --no-checkout {repo} {backup_dir}/{name}")
+            os.system(f"git clone --no-checkout {repo} {BACKUP_DIR}/{name}")
+
+
+def update_repos():
+    for repo in os.listdir(BACKUP_DIR):
+        os.system(f"cd {os.path.join(BACKUP_DIR, repo)} && git fetch origin")
+        print(f"Updated {repo}")
 
 
 if __name__ == "__main__":
     config = get_config()
+    os.makedirs(BACKUP_DIR, exist_ok=True)
     clone_repos(config["repos"])
+    update_repos()
 
     print("Your backup has been successfully completed.")
