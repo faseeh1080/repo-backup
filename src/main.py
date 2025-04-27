@@ -2,19 +2,19 @@ import json
 import os
 import sys
 
-from src.config import configure
+from config import configure
 
 BACKUP_DIR = "backup"
 
 
-def get_config():
+def get_configuration():
     if not os.path.exists("config.json"):
-        config = configure()
+        configuration = configure()
     else:
         with open("config.json", "r") as config_file:
-            config = json.load(config_file)
+            configuration = json.load(config_file)
 
-    return config
+    return configuration
 
 
 def clone_repos(repos):
@@ -41,9 +41,9 @@ def update_repos():
 
 
 if __name__ == "__main__":
-    config = get_config()
+    configuration = get_configuration()
     os.makedirs(BACKUP_DIR, exist_ok=True)
-    clone_repos(config["repos"])
+    clone_repos(configuration["repos"])
     update_repos()
 
     print("Your backup has been successfully completed.")
