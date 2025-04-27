@@ -10,8 +10,10 @@ def get_public_repos(username):
     response = requests.get(f"https://api.github.com/users/{username}/repos")
 
     if response.status_code != 200:
-        print(f"Failed to fetch repositories: {response.status_code}")
-        return None
+        print(
+            f"Failed to fetch repositories with status code {response.status_code}. Make sure you are connected to the internet."
+        )
+        return []
 
     response = response.json()
     repos = [repo["html_url"] + ".git" for repo in response]
@@ -29,12 +31,13 @@ def configure():
     if ask_yes_or_no(
         "Do you want to add all of your public repositories to the backup list?"
     ):
+        print("Fetching your public repositories from GitHub.")
         config["repos"].extend(get_public_repos(config["username"]))
 
     # Add custom repos
     repo = "https://github.com/username/example.git"
     print(
-        "Enter the web URLs of other repositories one by one. Hit Enter when you are done."
+        "Enter the web URLs of your other repositories one by one. Hit Enter when you are done."
     )
     while repo:
         repo = input(" > ").strip()
@@ -43,12 +46,12 @@ def configure():
 
     # LFS
     config["lfs"] = ask_yes_or_no(
-        "Do you want to backup LFS files? If you have Git LFS installed, I recommend turning this on."
+        "Do you want to backup your LFS files? If you have Git LFS installed, I recommend turning this on."
     )
 
     # Store the configuration
     with open("config.json", "w") as config_file:
         json.dump(config, config_file, indent=4)
 
-    print("Configuration complete!")
+    print("Configuration complete! Program will start shortly.\n")
     return config

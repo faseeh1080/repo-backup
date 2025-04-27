@@ -80,4 +80,4 @@ if __name__ == "__main__":
     if configuration["lfs"]:
         update_lfs_files(repo_paths)
 
-    print("Your backup has been successfully completed.")
+    print("Your repositories have been backed up successfully.")
