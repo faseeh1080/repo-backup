@@ -6,14 +6,19 @@ def ask_yes_or_no(question) -> bool:
     return input(question + " (y/N): ").strip().lower() == "y"
 
 
-def get_public_repos(username):
-    response = requests.get(f"https://api.github.com/users/{username}/repos")
+def get_public_repos():
+    username = input("Enter your GitHub username: ")
 
-    if response.status_code != 200:
-        print(
-            f"Failed to fetch repositories with status code {response.status_code}. Make sure you are connected to the internet."
-        )
-        return []
+    while True:
+        response = requests.get(f"https://api.github.com/users/{username}/repos")
+
+        if response.status_code != 200:
+            if ask_yes_or_no(
+                f"Oops! Failed to fetch repositories (status code: {response.status_code}). Please verify your network connection and username. Would you like to skip this step?"
+            ):
+                return []
+        else:
+            break
 
     response = response.json()
     repos = [repo["html_url"] + ".git" for repo in response]
@@ -21,18 +26,16 @@ def get_public_repos(username):
 
 
 def configure():
-    print("Welcome! Lets configure your backup program. You only need to do it once.")
+    print("\nWelcome! Lets configure your backup program. You only need to do it once.")
 
-    config = {"username": "name", "repos": [], "lfs": False}
-
-    config["username"] = input("Enter your GitHub username: ")
+    config = {"repos": [], "lfs": False}
 
     # Add all public repos
     if ask_yes_or_no(
         "Do you want to add all of your public repositories to the backup list?"
     ):
-        print("Fetching your public repositories from GitHub.")
-        config["repos"].extend(get_public_repos(config["username"]))
+        config["repos"].extend(get_public_repos())
+        print("All of your public repositories have been added to the backup list.")
 
     # Add custom repos
     repo = "https://github.com/username/example.git"
