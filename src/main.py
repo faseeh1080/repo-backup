@@ -1,25 +1,12 @@
 import json
 import os
-import subprocess
 import sys
 
+from common import *
 from config import configure
+from clone import clone_repos
 
 BACKUP_DIR = "backup"
-
-
-def rprint(statement):
-    print("\033[K" + str(statement), end="\r", flush=True)
-
-
-def execute(*commands, cwd=None):
-    subprocess.run(
-        commands,
-        cwd=cwd,
-        check=True,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.PIPE,
-    )
 
 
 def get_configuration():
@@ -38,28 +25,6 @@ def check_git():
             "Oops! Looks like Git is not installed or added to your PATH. Please rerun the program after fixing the issue."
         )
         sys.exit(1)
-
-
-def clone_repos(repos):
-    """Clones repos which are not cloned yet."""
-
-    cloned_repos = os.listdir(BACKUP_DIR)
-    number_of_repos_cloned = 0
-
-    for repo in repos:
-        name = repo[19:-4].replace("/", "-")
-
-        if name not in cloned_repos:
-            rprint(f"Cloning repo no {number_of_repos_cloned + 1}: {repo}")
-            execute(
-                "git", "clone", "--no-checkout", repo, os.path.join(BACKUP_DIR, name)
-            )
-            number_of_repos_cloned += 1
-
-    if number_of_repos_cloned:
-        print(
-            f"\033[KCloned {number_of_repos_cloned} {'repositories' if number_of_repos_cloned != 1 else 'repository'}"
-        )
 
 
 def update_repos(repo_paths):
@@ -90,7 +55,7 @@ if __name__ == "__main__":
     check_git()
 
     os.makedirs(BACKUP_DIR, exist_ok=True)
-    clone_repos(configuration["repos"])
+    clone_repos(configuration, BACKUP_DIR)
 
     repo_paths = [os.path.join(BACKUP_DIR, repo) for repo in os.listdir(BACKUP_DIR)]
 
