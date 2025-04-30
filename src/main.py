@@ -3,20 +3,34 @@ import os
 import sys
 
 from common import *
-from config import configure
 from clone import clone_repos
 
 BACKUP_DIR = "backup"
 
 
-def get_configuration():
+def get_config():
     if not os.path.exists("config.json"):
-        configuration = configure()
+        config = {"users-and-organizations": [], "other-repos": [], "lfs": False}
+
+        with open("config.json", "w") as config_file:
+            json.dump(config, config_file, indent=4)
+
+        print(
+            "`config.json` has been generated. Check the README to know how to configure the program."
+        )
+        sys.exit()
+
     else:
         with open("config.json", "r") as config_file:
-            configuration = json.load(config_file)
+            config = json.load(config_file)
 
-    return configuration
+    if len(config["users-and-organizations"]) == 0 and len(config["other-repos"]) == 0:
+        print(
+            "`config.json` looks empty. Please fill in some information. Check the README to learn more."
+        )
+        sys.exit()
+
+    return config
 
 
 def check_git():
@@ -50,18 +64,18 @@ def update_lfs_files(repo_paths):
 
 
 if __name__ == "__main__":
-    configuration = get_configuration()
+    config = get_config()
 
     check_git()
 
     os.makedirs(BACKUP_DIR, exist_ok=True)
-    clone_repos(configuration, BACKUP_DIR)
+    clone_repos(config, BACKUP_DIR)
 
     repo_paths = [os.path.join(BACKUP_DIR, repo) for repo in os.listdir(BACKUP_DIR)]
 
     update_repos(repo_paths)
 
-    if configuration["lfs"]:
+    if config["lfs"]:
         update_lfs_files(repo_paths)
 
     print("Your repositories have been backed up successfully.")
