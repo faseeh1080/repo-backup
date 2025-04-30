@@ -41,10 +41,13 @@ def clone_repos(configuration, destination):
         for repo in repos_to_clone
         if generate_repo_name_from_url(repo) not in cloned_repos
     ]
+
     no_of_repos_to_clone = len(repos_to_clone)
-    print(
-        f"Found {no_of_repos_to_clone} {'repositories' if no_of_repos_to_clone != 1 else 'repository'} that are not cloned."
-    )
+
+    if no_of_repos_to_clone == 1:
+        print("Found one repository that has not been cloned.")
+    else:
+        print(f"Found {no_of_repos_to_clone} repositories that have not been cloned.")
 
     no_of_repos_cloned = 0
     for repo in repos_to_clone:
