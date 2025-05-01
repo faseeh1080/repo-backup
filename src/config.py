@@ -10,6 +10,7 @@ def get_config():
             "ignored-repos": [],
             "other-repos": [],
             "lfs": False,
+            "backup-directory": "backup",
         }
 
         with open("config.json", "w") as config_file:

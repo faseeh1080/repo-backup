@@ -7,8 +7,6 @@ from clone import clone_repos
 from update import *
 from config import get_config
 
-BACKUP_DIR = "backup"
-
 
 def check_git():
     if os.system("git --version") != 0:
@@ -26,13 +24,14 @@ def cli():
 @click.command(help="Backs up your repositories according to `config.json`")
 def backup():
     config = get_config()
+    backup_dir = config["backup-directory"]
 
     check_git()
 
-    os.makedirs(BACKUP_DIR, exist_ok=True)
-    clone_repos(config, BACKUP_DIR)
+    os.makedirs(backup_dir, exist_ok=True)
+    clone_repos(config, backup_dir)
 
-    repo_paths = [os.path.join(BACKUP_DIR, repo) for repo in os.listdir(BACKUP_DIR)]
+    repo_paths = [os.path.join(backup_dir, repo) for repo in os.listdir(backup_dir)]
 
     update_repos(repo_paths)
 
