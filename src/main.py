@@ -1,36 +1,13 @@
-import json
 import os
 import sys
+import click
 
 from common import *
 from clone import clone_repos
+from update import *
+from config import get_config
 
 BACKUP_DIR = "backup"
-
-
-def get_config():
-    if not os.path.exists("config.json"):
-        config = {"users-and-organizations": [], "other-repos": [], "lfs": False}
-
-        with open("config.json", "w") as config_file:
-            json.dump(config, config_file, indent=4)
-
-        print(
-            "`config.json` has been generated. Check the README to know how to configure the program."
-        )
-        sys.exit()
-
-    else:
-        with open("config.json", "r") as config_file:
-            config = json.load(config_file)
-
-    if len(config["users-and-organizations"]) == 0 and len(config["other-repos"]) == 0:
-        print(
-            "`config.json` looks empty. Please fill in some information. Check the README to learn more."
-        )
-        sys.exit(1)
-
-    return config
 
 
 def check_git():
@@ -41,29 +18,13 @@ def check_git():
         sys.exit(1)
 
 
-def update_repos(repo_paths):
-    total_no_of_repos = len(repo_paths)
-
-    for i in range(total_no_of_repos):
-        rprint(f"Updating repo {i+1} / {total_no_of_repos}: {repo_paths[i]}")
-        execute("git", "fetch", "--verbose", "origin", cwd=repo_paths[i])
-
-    print(f"\033[KAll repositories have been updated.")
+@click.group()
+def cli():
+    pass
 
 
-def update_lfs_files(repo_paths):
-    total_no_of_repos = len(repo_paths)
-
-    for i in range(total_no_of_repos):
-        rprint(
-            f"Fetching LFS files for repo {i+1} / {total_no_of_repos}: {repo_paths[i]}"
-        )
-        execute("git", "lfs", "fetch", "--all", cwd=repo_paths[i])
-
-    print("\033[KAll LFS files have been fetched.")
-
-
-if __name__ == "__main__":
+@click.command(help="Backs up your repositories according to `config.json`.")
+def backup():
     config = get_config()
 
     check_git()
@@ -79,3 +40,9 @@ if __name__ == "__main__":
         update_lfs_files(repo_paths)
 
     print("Your repositories have been backed up successfully.")
+
+
+cli.add_command(backup)
+
+if __name__ == "__main__":
+    cli()
