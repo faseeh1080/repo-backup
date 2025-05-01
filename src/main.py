@@ -28,7 +28,7 @@ def get_config():
         print(
             "`config.json` looks empty. Please fill in some information. Check the README to learn more."
         )
-        sys.exit()
+        sys.exit(1)
 
     return config
 
