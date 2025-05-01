@@ -5,7 +5,12 @@ import json
 
 def get_config():
     if not os.path.exists("config.json"):
-        config = {"users-and-organizations": [], "other-repos": [], "lfs": False}
+        config = {
+            "users-and-organizations": [],
+            "ignored-repos": [],
+            "other-repos": [],
+            "lfs": False,
+        }
 
         with open("config.json", "w") as config_file:
             json.dump(config, config_file, indent=4)

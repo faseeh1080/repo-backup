@@ -26,20 +26,21 @@ def get_public_repos(username):
     return repos
 
 
-def clone_repos(configuration, destination):
+def clone_repos(config, destination):
     """Clones repos which are not cloned yet."""
 
     public_repos = []
-    for usr_or_org in configuration["users-and-organizations"]:
+    for usr_or_org in config["users-and-organizations"]:
         public_repos.extend(get_public_repos(usr_or_org))
 
-    repos_to_clone = public_repos + configuration["other-repos"]
+    repos_to_clone = public_repos + config["other-repos"]
 
     cloned_repos = os.listdir(destination)
     repos_to_clone = [
         repo
         for repo in repos_to_clone
         if generate_repo_name_from_url(repo) not in cloned_repos
+        and repo not in config["ignored-repos"]
     ]
 
     no_of_repos_to_clone = len(repos_to_clone)
