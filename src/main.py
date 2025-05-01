@@ -53,7 +53,7 @@ def reset_config():
 
 
 cli.add_command(backup)
-cli.add_command(reset_config, name="reset-config")
+cli.add_command(reset_config, name="reset")
 
 if __name__ == "__main__":
     cli()
