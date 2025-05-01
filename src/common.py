@@ -5,13 +5,13 @@ def rprint(statement):
     print("\033[K" + str(statement), end="\r", flush=True)
 
 
-def execute(*commands, cwd=None):
+def execute(*commands, cwd=None, verbose=False):
     subprocess.run(
         commands,
         cwd=cwd,
         check=True,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.PIPE,
+        stdout=None if verbose else subprocess.DEVNULL,
+        stderr=None if verbose else subprocess.PIPE,
     )
 
 
