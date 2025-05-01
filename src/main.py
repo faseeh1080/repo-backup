@@ -23,7 +23,7 @@ def cli():
     pass
 
 
-@click.command(help="Backs up your repositories according to `config.json`.")
+@click.command(help="Backs up your repositories according to `config.json`")
 def backup():
     config = get_config()
 
@@ -42,7 +42,18 @@ def backup():
     print("Your repositories have been backed up successfully.")
 
 
+@click.command(help="Resets `config.json`")
+def reset_config():
+    config_file = "config.json"
+
+    if os.path.exists(config_file):
+        os.remove(config_file)
+
+    get_config()
+
+
 cli.add_command(backup)
+cli.add_command(reset_config, name="reset-config")
 
 if __name__ == "__main__":
     cli()
