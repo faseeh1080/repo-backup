@@ -29,6 +29,8 @@ def backup():
 
     if config["lfs"]:
         update_lfs_files(repo_paths)
+    else:
+        print("To also fetch LFS files, enable the option in `config.json`.")
 
     print("Your repositories have been backed up successfully.")
 
