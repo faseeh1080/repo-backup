@@ -1,15 +1,12 @@
 import subprocess
 import sys
 import os
-
-
-def rprint(statement):
-    print("\033[K" + str(statement), end="\r", flush=True)
+import click
 
 
 def check_git():
     if os.system("git --version") != 0:
-        print(
+        click.echo(
             "Oops! Looks like Git is not installed or added to your PATH. Please rerun the program after fixing the issue."
         )
         sys.exit(1)
@@ -37,5 +34,5 @@ def get_list_input() -> list:
         if inp:
             input_list.append(inp)
 
-    print("\033[F\033[K", end="")
+    click.echo("\033[F\033[K", nl=False)
     return input_list

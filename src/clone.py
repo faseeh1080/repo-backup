@@ -1,5 +1,6 @@
 import requests
 import os
+import click
 
 from common import *
 
@@ -46,14 +47,17 @@ def clone_repos(config, destination):
     no_of_repos_to_clone = len(repos_to_clone)
 
     if no_of_repos_to_clone == 1:
-        print("Found one repository that has not been cloned.")
+        click.echo("Found one repository that has not been cloned.")
     else:
-        print(f"Found {no_of_repos_to_clone} repositories that have not been cloned.")
+        click.echo(
+            f"Found {no_of_repos_to_clone} repositories that have not been cloned."
+        )
 
     no_of_repos_cloned = 0
     for repo in repos_to_clone:
-        rprint(
-            f"Cloning repo {no_of_repos_cloned + 1} / {no_of_repos_to_clone}: {repo}"
+        click.echo(
+            f"\033[KCloning repo {no_of_repos_cloned + 1} / {no_of_repos_to_clone}: {repo}\r",
+            nl=False,
         )
         execute(
             "git",
@@ -65,6 +69,6 @@ def clone_repos(config, destination):
         no_of_repos_cloned += 1
 
     if no_of_repos_cloned:
-        print(
-            f"\033[KCloned {no_of_repos_cloned} {'repositories' if no_of_repos_cloned != 1 else 'repository'}"
+        click.echo(
+            f"\033[KCloned {no_of_repos_cloned} {'repositories' if no_of_repos_cloned != 1 else 'repository'}."
         )
