@@ -1,8 +1,18 @@
 import subprocess
+import sys
+import os
 
 
 def rprint(statement):
     print("\033[K" + str(statement), end="\r", flush=True)
+
+
+def check_git():
+    if os.system("git --version") != 0:
+        print(
+            "Oops! Looks like Git is not installed or added to your PATH. Please rerun the program after fixing the issue."
+        )
+        sys.exit(1)
 
 
 def execute(*commands, cwd=None, verbose=False):

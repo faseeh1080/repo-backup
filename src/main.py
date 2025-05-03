@@ -8,14 +8,6 @@ from update import *
 from config import get_config
 
 
-def check_git():
-    if os.system("git --version") != 0:
-        print(
-            "Oops! Looks like Git is not installed or added to your PATH. Please rerun the program after fixing the issue."
-        )
-        sys.exit(1)
-
-
 @click.group()
 def cli():
     pass
