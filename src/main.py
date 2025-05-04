@@ -14,6 +14,16 @@ def cli():
     pass
 
 
+@click.command(help="Creates `config.json` file for configuration.")
+def config():
+    config_file = "config.json"
+
+    if os.path.exists(config_file):
+        os.remove(config_file)
+
+    get_config()
+
+
 @click.command(help="Backs up your repositories according to `config.json`")
 @click.option("--verbose", is_flag=True, help="Enable verbose output.")
 def backup(verbose):
@@ -41,18 +51,8 @@ def backup(verbose):
     click.echo("Your repositories have been backed up successfully.")
 
 
-@click.command(help="Resets `config.json`")
-def reset_config():
-    config_file = "config.json"
-
-    if os.path.exists(config_file):
-        os.remove(config_file)
-
-    get_config()
-
-
+cli.add_command(config, name="config")
 cli.add_command(backup)
-cli.add_command(reset_config, name="reset")
 
 if __name__ == "__main__":
     cli()

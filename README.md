@@ -8,7 +8,7 @@ This program clones all your repositories into a specified folder, making it eas
 
 ## How to Configure
 
-First, run the command `backup`. It will generate a `config.json` file to configure the application. In the file, you'll see:
+First, run the command `config`. It will generate a `config.json` file to configure the application. In the file, you'll see:
 
 ```json
 {
@@ -40,4 +40,4 @@ Run the backup command to back up all your repositories added to `config.json`. 
 
 Use the option `--verbose` with the `backup` command to see the processes in more detail.
 
-If you want to reset the configuration, run the program with the command `reset`, and the `config.json` file will be regenerated.
+To reset the configuration, run the `config` command again; the `config.json` file will be regenerated.
