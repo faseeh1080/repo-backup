@@ -13,7 +13,12 @@ def cli():
 
 
 @click.command(help="Backs up your repositories according to `config.json`")
-def backup():
+@click.option("--verbose", is_flag=True, help="Enable verbose output.")
+def backup(verbose):
+    import common
+
+    common.verbose = verbose
+
     config = get_config()
     backup_dir = config["backup-directory"]
 

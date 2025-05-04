@@ -3,6 +3,8 @@ import sys
 import os
 import click
 
+verbose = False
+
 
 def check_git():
     if os.system("git --version") != 0:
@@ -12,7 +14,10 @@ def check_git():
         sys.exit(1)
 
 
-def execute(*commands, cwd=None, verbose=False):
+def execute(*commands, cwd=None):
+    if verbose:
+        click.echo("\033[K >>> " + " ".join(commands))
+
     subprocess.run(
         commands,
         cwd=cwd,
