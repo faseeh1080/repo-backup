@@ -1,6 +1,8 @@
 # Repo Backup
 
-This program clones all your repositories into a specified folder, making it easy to back up your GitHub repositories, including LFS files.
+_(Created by [Faseeh1080](https://github.com/Faseeh1080))_
+
+This program clones all your repositories into a specified folder, making it easy to back up your GitHub repositories, **including LFS files**.
 
 > The program will only clone up to 30 repositories. If you have fewer than 30, there won't be any issues.
 

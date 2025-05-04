@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0
+
 from common import *
 import click
 

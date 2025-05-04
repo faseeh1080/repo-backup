@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0
+
 import subprocess
 import sys
 import os
