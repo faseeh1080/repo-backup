@@ -30,6 +30,8 @@ If you also want to fetch LFS files, change `lfs` to `true`. If you have LFS ins
 
 `backup-directory` is the directory in which you back up your repos. It can be relative or absolute and is set to `backup` by default.
 
+> For Windows, you will need to escape the backslashes with another backslash when adding the path to your backup directory.
+
 ## How to Run
 
 Run the backup command to back up all your repositories added to `config.json`. It will clone all repositories that have not been cloned to the `backup-directory` and update the others, including LFS files, according to your configuration.
