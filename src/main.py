@@ -46,7 +46,7 @@ def backup(verbose):
     if config["lfs"]:
         update_lfs_files(repo_paths)
     else:
-        click.echo("To also fetch LFS files, enable the option in `config.json`.")
+        click.echo("To fetch LFS files as well, enable the option in `config.json`.")
 
     click.echo("Your repositories have been backed up successfully.")
 
